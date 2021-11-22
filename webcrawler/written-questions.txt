@@ -11,7 +11,9 @@ Q1. Run the web crawler using the configurations located at src/main/config/writ
 
     Why did the parser take more time when run with ParallelWebCrawler?
 
-        --Answer: That is because the Profiler take time to be finished in all the threads. The record method in the ProfilingState class, which is used in the ProfilingMethodInterceptor, sums the duration received.
+         --Answer: Because the Profiler sums the time taken by the parse method in all threads.
+         The record method in the ProfilingState class, which is used in the ProfilingMethodInterceptor, sums the duration received.
+
 
 
 Q2. Your manager ran your crawler on her old personal computer, using the configurations from Q1, and she notices that
@@ -20,14 +22,16 @@ Q2. Your manager ran your crawler on her old personal computer, using the config
     (a) Suggest one reason why the sequential web crawler was able to read more web pages than the parallel crawler.
         (Hint: Try setting "parallelism" to 1 in the JSON configs to simulate your manager's computer.)
 
-        --Answer: Because it takes more time to create multiple threads for the processing instead of going right into the operation.
-
+        --Answer: Parallel web crawler uses more resources from a one thread computer, because the main requirements for optimal functioning is exactly a larger number of threads.
+                  That is the reason why it does not perform well on a old computer.
+                  As sequential web crawler was created to work sequentially without using more than one thread at the same time, it works better on a computer with only one thread.
 
     (b) Suggest one scenario in which the parallel web crawler will almost certainly perform better than the sequential
         crawler. Why will it perform better?
 
 
-        --Answer: The parallel web crawler will outperform the sequential web crawler. A multi-core computer does have a larger number of threads, so it benefits from the parallel crawl functionality.
+        --Answer: On a multi-core computer, the parallel web crawler will outperform the sequential web crawler.
+                  A multi-core computer does have a larger number of threads, so it benefits from the parallel crawl functionality.
 
 
 Q3. Analyze your method profiler through the lens of Aspect Oriented Programming, by answering the following questions:
@@ -50,7 +54,12 @@ Q4. Identify three (3) different design patterns used in this project, and expla
 
     --Answer:
         1. Builder Pattern: If a class have multi constructor parameters, then used the builder pattern. CrawlerConfiguration uses the builder patten.
+            It simplifies the creation of instances of complex constructor classes, but it increases significantly the amount of code.
 
         2. Dependency Injection: For clean design we use dependencies inject. WebCrawlerMain that injects Webcrawler and Profiler classes.
+            It uses the Guice plugin to inject dependencies.
+            This design pattern simplifies tests and make classes more modular, but it increases the number of classes and/or interfaces of the project.
 
         3. Singleton Pattern: If a class we use single instance use entire application life, we use Singleton pattern.
+            This makes sure that only one instance of the injected classes are loaded into the application and recycled when needed.
+            Singletons really shine when object creation is heavy and we want to only do so once in out app.
